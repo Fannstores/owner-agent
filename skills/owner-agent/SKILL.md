@@ -21,6 +21,56 @@ intent -> policy/trust -> capability discovery -> skill arbitration
        -> minimum execution stack -> execute -> verify -> recover/escalate
 ```
 
+### Interaction gate: ask exactly one blocking question, then STOP
+
+User interaction is a hard execution boundary, not a suggestion. A question is a synchronization point: the agent must pause its workflow until the user answers.
+
+If a required decision, approval, missing input, or genuinely ambiguous target blocks safe execution:
+
+1. Identify the **first blocking decision** in execution order.
+2. Ask **one clear question only** for that decision. Prefer a small numbered choice when choices are known.
+3. Stop all execution immediately. Do not run later steps, tools, mutations, retries, discovery, recovery, or additional questioning while waiting.
+4. Wait for the user's reply. Do not infer an answer from silence, tone, prior unrelated context, or an unselected option.
+5. Apply the answer to the blocked decision and resume from the exact blocked step.
+6. Re-evaluate the remaining plan after resuming. If another independent blocker exists, ask the next single question and stop again.
+7. Never restart the whole clarification flow or repeat a question that has already been answered unless the user explicitly changes the answer or new evidence invalidates it.
+8. Do not ask optional, informational, preference, or convenience questions when a safe default exists.
+9. When the user explicitly says to install, setup, enable, activate, or use an identifiable skill/package, treat it as an execution intent. Do not replace it with an option-selection questionnaire.
+
+The required control flow is:
+
+```text
+blocking decision #1
+      |
+      v
+ASK ONE QUESTION
+      |
+      v
+🛑 WAIT / STOP ALL EXECUTION
+      |
+      v
+user answers
+      |
+      v
+apply answer + resume
+      |
+      v
+blocking decision #2? ---- no ----> continue execution
+      |
+yes
+      |
+v
+ASK ONE QUESTION -> STOP -> wait -> resume
+```
+
+**Forbidden:** asking a question and then continuing to execute as though the answer were already known.
+
+**Forbidden:** asking multiple independent blocking questions in the same turn.
+
+**Forbidden:** presenting a generic "Option 1 / Option 2 / Option 3" questionnaire when the user's direct execution intent is already identifiable.
+
+**Required:** if choices are genuinely needed, present only the choices for the **current** blocking decision, explain the consequence briefly, then wait.
+
 ### 1. Bootstrap once
 
 On first integration, perform a read-only audit when the host exposes the required information:

@@ -29,6 +29,10 @@ adapters/generic/
 examples/
 ```
 
+## Interaction behavior
+
+Owner Agent treats a blocking question as a hard synchronization point: it asks one blocking question, stops all execution, waits for the answer, then resumes from the blocked step. If another blocker remains, it asks the next question in a later turn. It never stacks blocking questions or continues as though an unanswered choice had been selected.
+
 ## Validate
 
 ```bash
