@@ -1,0 +1,9 @@
+# Optional metadata extension for existing skills.
+owner_agent:
+  capabilities: []
+  triggers: []
+  dependencies: []
+  risk: low
+  activation: lazy
+  verification: []
+  compatible_hosts: [generic]

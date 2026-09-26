@@ -1,0 +1,7 @@
+owner_agent:
+  trust: full_project_trust
+  protected_paths:
+    - .env
+    - production/
+  critical_actions_require_confirmation: true
+  max_recovery_attempts: 2
